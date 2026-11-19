@@ -26,6 +26,7 @@ import {
 } from '@/data/fixtures';
 import { buildContext } from '@/explain/context';
 import { explain, panelLabel } from '@/explain/explain';
+import { applyExplainResult, isCurrentExplain, type ExplainState } from '@/explain/guard';
 import { mockAdapter, parseMockMode } from '@/explain/mockAdapter';
 import type { Explanation } from '@/explain/types';
 
@@ -79,22 +80,17 @@ function App() {
   // Explanation is tied to the exact result object it explains. When the result
   // is cleared or replaced, `submitted` is a new value, so a stale or late
   // explanation no longer matches and is never shown.
-  const [explained, setExplained] = useState<{
-    target: typeof submitted;
-    result: Explanation | null; // null = pending
-  } | null>(null);
-  const isCurrentExplain = explained !== null && explained.target === submitted;
-  const explainPending = isCurrentExplain && explained.result === null;
-  const explanation = isCurrentExplain ? explained.result : null;
+  const [explained, setExplained] = useState<ExplainState<NonNullable<typeof submitted>>>(null);
+  const isCurrent = isCurrentExplain(explained, submitted);
+  const explainPending = isCurrent && explained.result === null;
+  const explanation: Explanation | null = isCurrent ? explained.result : null;
 
   const handleExplain = async () => {
     if (!submitted) return;
     const target = submitted;
     setExplained({ target, result: null });
     const result = await explain(buildContext(ROOM_NAME, target, now), explainAdapter);
-    setExplained((prev) =>
-      prev !== null && prev.target === target ? { target, result } : prev
-    );
+    setExplained((prev) => applyExplainResult(prev, target, result));
   };
 
   const durationLabel = (b: Booking) => `${b.end - b.start} min`;
