@@ -15,6 +15,8 @@ Import project modules with the `@/` alias (`@/time` == `src/time.ts`).
 - `src/availability.test.ts` — regression tests for AC1–AC5.
 - `src/time.ts` — `parseHHMM`, `toHHMM`, `MINUTES_IN_DAY`; `src/time.test.ts` — parser/overlap/fixture tests.
 - `src/data/fixtures.ts` — the only source of fictional demo data (Room 301, now, bookings).
+- `src/explain/` — Explain feature: `types`, `context` (build/validate), `validate` (output), `fallback`, `mockAdapter`, `explain` (orchestrator, 3 s timeout).
+- Explain tests: `src/availability.code.test.ts` (reason codes), `src/explain/{context,validate,explain}.test.ts`; helpers in `src/explain/testUtils.ts`.
 Times are minutes since midnight (0..1440). Intervals are half-open `[start, end)`.
 
 ## Acceptance criteria (must be preserved)

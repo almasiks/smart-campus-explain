@@ -9,6 +9,7 @@ import {
   XCircle,
   ArrowRight,
   Info,
+  MessageSquareText,
 } from 'lucide-react';
 import {
   checkAvailability,
@@ -23,6 +24,13 @@ import {
   INITIAL_BLOCKED,
   INITIAL_BOOKINGS,
 } from '@/data/fixtures';
+import { buildContext } from '@/explain/context';
+import { explain, panelLabel } from '@/explain/explain';
+import { mockAdapter, parseMockMode } from '@/explain/mockAdapter';
+import type { Explanation } from '@/explain/types';
+
+// Read-only adapter chosen once; ?explainMock=ok|timeout|error|nokey is test-only.
+const explainAdapter = mockAdapter(parseMockMode(window.location.search));
 
 function App() {
   const [now] = useState(INITIAL_NOW);
@@ -49,6 +57,7 @@ function App() {
         outcome: {
           status: 'Unavailable',
           rule: 'INPUT',
+          code: 'INPUT_INVALID',
           reason: 'Please enter valid times in HH:MM format (e.g. 09:30).',
         },
       });
@@ -65,6 +74,27 @@ function App() {
 
   const handleReset = () => {
     setSubmitted(null);
+  };
+
+  // Explanation is tied to the exact result object it explains. When the result
+  // is cleared or replaced, `submitted` is a new value, so a stale or late
+  // explanation no longer matches and is never shown.
+  const [explained, setExplained] = useState<{
+    target: typeof submitted;
+    result: Explanation | null; // null = pending
+  } | null>(null);
+  const isCurrentExplain = explained !== null && explained.target === submitted;
+  const explainPending = isCurrentExplain && explained.result === null;
+  const explanation = isCurrentExplain ? explained.result : null;
+
+  const handleExplain = async () => {
+    if (!submitted) return;
+    const target = submitted;
+    setExplained({ target, result: null });
+    const result = await explain(buildContext(ROOM_NAME, target, now), explainAdapter);
+    setExplained((prev) =>
+      prev !== null && prev.target === target ? { target, result } : prev
+    );
   };
 
   const durationLabel = (b: Booking) => `${b.end - b.start} min`;
@@ -341,6 +371,35 @@ function App() {
                     <p className="inline-flex items-center gap-1 text-xs text-rose-600/80">
                       <Info className="h-3.5 w-3.5" />
                       Failed rule: {submitted.outcome.rule}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Explain availability (Practice #11) — separate from the status card */}
+        {submitted && (
+          <section className="rounded-2xl border border-slate-200 bg-white shadow-sm">
+            <div className="px-5 py-4 space-y-3">
+              <button
+                type="button"
+                onClick={handleExplain}
+                disabled={explainPending}
+                className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2"
+              >
+                <MessageSquareText className="h-4 w-4" />
+                Explain availability
+              </button>
+              <div aria-live="polite">
+                {explanation && (
+                  <div className="rounded-lg border border-dashed border-slate-300 bg-slate-50 px-4 py-3">
+                    <p className="text-xs font-medium text-slate-500">
+                      {panelLabel(explanation.source)}
+                    </p>
+                    <p className="mt-1 text-sm text-slate-700 break-words">
+                      {explanation.text}
                     </p>
                   </div>
                 )}

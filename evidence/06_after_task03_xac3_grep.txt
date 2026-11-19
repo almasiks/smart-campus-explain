@@ -1,0 +1,38 @@
+# XAC3 grep — run after 'npm run build' (2026-11-19T10:38Z)
+# -o with up to 60 chars of context so minified bundle lines stay readable
+
+$ grep -rnoE ".{0,60}VITE_.{0,60}" src/
+(exit 1 — 1 means no match)
+
+$ grep -rnoE ".{0,60}VITE_.{0,60}" dist/
+(exit 1 — 1 means no match)
+
+$ grep -rnoE ".{0,60}apiKey.{0,60}" src/
+(exit 1 — 1 means no match)
+
+$ grep -rnoE ".{0,60}apiKey.{0,60}" dist/
+(exit 1 — 1 means no match)
+
+$ grep -rnoE ".{0,60}dangerouslySetInnerHTML.{0,60}" src/
+(exit 1 — 1 means no match)
+
+$ grep -rnoE ".{0,60}dangerouslySetInnerHTML.{0,60}" dist/
+dist/assets/index-DnwPoSaT.js:33:.sanitizeURL=o,this.removeEmptyString=i}var ne={};"children dangerouslySetInnerHTML defaultValue defaultChecked innerHTML suppressContentEditab
+dist/assets/index-DnwPoSaT.js:37:||(t=e[l])}t!==null&&(t.selected=!0)}}function oo(e,t){if(t.dangerouslySetInnerHTML!=null)throw Error(g(91));return V({},t,{value:void 0,defaul
+dist/assets/index-DnwPoSaT.js:37::!0});function uo(e,t){if(t){if(Zc[e]&&(t.children!=null||t.dangerouslySetInnerHTML!=null))throw Error(g(137,e));if(t.dangerouslySetInnerHTML!=
+dist/assets/index-DnwPoSaT.js:37:null){if(t.children!=null)throw Error(g(60));if(typeof t.dangerouslySetInnerHTML!="object"||!("__html"in t.dangerouslySetInnerHTML))throw Er
+dist/assets/index-DnwPoSaT.js:38:t.children=="string"||typeof t.children=="number"||typeof t.dangerouslySetInnerHTML=="object"&&t.dangerouslySetInnerHTML!==null&&t.dangerouslyS
+dist/assets/index-DnwPoSaT.js:40:r(i in u)u.hasOwnProperty(i)&&(n||(n={}),n[i]="")}else c!=="dangerouslySetInnerHTML"&&c!=="children"&&c!=="suppressContentEditableWarning"&&c!=
+dist/assets/index-DnwPoSaT.js:40:}),n[i]=s[i])}else n||(o||(o=[]),o.push(c,n)),n=s;else c==="dangerouslySetInnerHTML"?(s=s?s.__html:void 0,u=u?u.__html:void 0,s!=null&&u!==s&&(
+dist/assets/index-DnwPoSaT.js:40:if(u.hasOwnProperty(o)){var s=u[o];o==="style"?Ts(e,s):o==="dangerouslySetInnerHTML"?(s=s?s.__html:void 0,s!=null&&_s(e,s)):o==="children"?type
+dist/assets/index-DnwPoSaT.js:40:s.length;i+=2){var p=s[i],h=s[i+1];p==="style"?Ts(l,h):p==="dangerouslySetInnerHTML"?_s(l,h):p==="children"?Dn(l,h):qo(l,p,h,c)}switch(u){case"
+(exit 0 — 1 means no match)
+
+# Origin check for the dist/ matches above
+$ grep -o dangerouslySetInnerHTML node_modules/react-dom/cjs/react-dom.production.min.js | wc -l
+13
+$ grep -o dangerouslySetInnerHTML dist/assets/*.js | wc -l
+13
+$ grep -ro dangerouslySetInnerHTML src | wc -l
+0
+# Equal counts: all dist/ occurrences are React DOM's internal prop handling, none from project code.

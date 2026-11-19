@@ -197,6 +197,13 @@ The purpose is to demonstrate XAC4 with screenshots in the real UI.
 
 **Trust boundary.** Everything above the "UNTRUSTED" box is authoritative and unchanged. The adapter output only crosses into the UI through the output validator, and only into the explanation panel. Data flows one way. Nothing from the explain path feeds back into `checkAvailability`, `bookings`, `blocked` or the status card.
 
+## Amendments
+
+| # | Date / task | Change | Reason |
+|---|---|---|---|
+| A1 | Task 03, approved by the human | `durationMinutes` is `null` for `RANGE_INVALID` as well as for `INPUT_INVALID` (§b type comment and validation rule). For all other codes it must be an integer in 0..1440. | With end before start (e.g. 12:00–11:00) the duration is negative. The 0..1440 rule would then reject a correct context and force a fallback. The `RANGE_INVALID` sentence does not use the duration. |
+| A2 | Task 03, approved by the human | XAC3 grep (§d): the grep for `VITE_`, `apiKey` and `dangerouslySetInnerHTML` must find **nothing in `src/`** (project code). Matches in `dist/` are allowed only if, for each pattern, the count in the bundle **equals** the count in react-dom's own file (`node_modules/react-dom/cjs/react-dom.production.min.js`). | The original wording ("finds nothing" in `src/` and `dist/`) cannot hold: the built bundle contains 13 `dangerouslySetInnerHTML` strings from React DOM's internal prop handling, the same 13 as react-dom's file (`evidence/06_after_task03_xac3_grep.txt`). |
+
 ## Open questions for later tasks
 
 - Task 03: how the reason code is obtained (see b).
