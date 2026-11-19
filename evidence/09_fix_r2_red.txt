@@ -1,0 +1,37 @@
+
+> vite-react-typescript-starter@0.0.0 test
+> vitest run
+
+
+[1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90mC:/Users/ACER/OneDrive/Рабочий стол/Hw_fall26/Cybersecurity/New_bolt[39m
+
+ [31m❯[39m src/explain/guard.test.ts [2m([22m[2m0 test[22m[2m)[22m
+ [32m✓[39m src/availability.test.ts [2m([22m[2m12 tests[22m[2m)[22m[90m 12[2mms[22m[39m
+ [32m✓[39m src/availability.code.test.ts [2m([22m[2m8 tests[22m[2m)[22m[90m 15[2mms[22m[39m
+ [32m✓[39m src/time.test.ts [2m([22m[2m16 tests[22m[2m)[22m[90m 12[2mms[22m[39m
+ [32m✓[39m src/explain/context.test.ts [2m([22m[2m13 tests[22m[2m)[22m[90m 13[2mms[22m[39m
+ [32m✓[39m src/explain/prompt.test.ts [2m([22m[2m39 tests[22m[2m)[22m[90m 30[2mms[22m[39m
+ [32m✓[39m src/explain/validate.test.ts [2m([22m[2m49 tests[22m[2m)[22m[90m 37[2mms[22m[39m
+ [32m✓[39m src/explain/explain.test.ts [2m([22m[2m21 tests[22m[2m)[22m[90m 38[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯[1m[7m Failed Suites 1 [27m[22m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[31m[1m[7m FAIL [27m[22m[39m src/explain/guard.test.ts[2m [ src/explain/guard.test.ts ][22m
+[31m[1mError[22m: Cannot find module '@/explain/guard' imported from 'C:/Users/ACER/OneDrive/Рабочий стол/Hw_fall26/Cybersecurity/New_bolt/src/explain/guard.test.ts'.
+
+- If you rely on tsconfig.json's "paths" to resolve modules, please install "vite-tsconfig-paths" plugin to handle module resolution.
+- Make sure you don't have relative aliases in your Vitest config. Use absolute paths instead. Read more: https://vitest.dev/guide/common-errors[39m
+[36m [2m❯[22m src/explain/guard.test.ts:[2m2:31[22m[39m
+    [90m  1| [39m[35mimport[39m { describe[33m,[39m expect[33m,[39m it } [35mfrom[39m [32m'vitest'[39m[33m;[39m
+    [90m  2| [39m[35mimport[39m { applyExplainResult[33m,[39m isCurrentExplain[33m,[39m type [33mExplainState[39m } [35mfro[39m…
+    [90m   | [39m                              [31m^[39m
+    [90m  3| [39m[35mimport[39m type { [33mExplanation[39m } [35mfrom[39m [32m'@/explain/types'[39m[33m;[39m
+    [90m  4| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m7 passed[39m[22m[90m (8)[39m
+[2m      Tests [22m [1m[32m158 passed[39m[22m[90m (158)[39m
+[2m   Start at [22m 17:08:22
+[2m   Duration [22m 1.84s[2m (transform 758ms, setup 0ms, collect 1.42s, tests 158ms, environment 3ms, prepare 1.69s)[22m
+

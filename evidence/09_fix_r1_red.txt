@@ -1,0 +1,97 @@
+
+> vite-react-typescript-starter@0.0.0 test
+> vitest run
+
+
+[1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90mC:/Users/ACER/OneDrive/Рабочий стол/Hw_fall26/Cybersecurity/New_bolt[39m
+
+ [32m✓[39m src/availability.test.ts [2m([22m[2m12 tests[22m[2m)[22m[90m 12[2mms[22m[39m
+ [32m✓[39m src/availability.code.test.ts [2m([22m[2m8 tests[22m[2m)[22m[90m 14[2mms[22m[39m
+ [32m✓[39m src/time.test.ts [2m([22m[2m16 tests[22m[2m)[22m[90m 11[2mms[22m[39m
+ [32m✓[39m src/explain/context.test.ts [2m([22m[2m13 tests[22m[2m)[22m[90m 13[2mms[22m[39m
+ [32m✓[39m src/explain/prompt.test.ts [2m([22m[2m39 tests[22m[2m)[22m[90m 32[2mms[22m[39m
+ [32m✓[39m src/explain/explain.test.ts [2m([22m[2m21 tests[22m[2m)[22m[90m 37[2mms[22m[39m
+ [31m❯[39m src/explain/validate.test.ts [2m([22m[2m49 tests[22m[2m | [22m[31m13 failed[39m[2m)[22m[90m 76[2mms[22m[39m
+[31m   [31m×[31m validateExplanation: R1 regression (contradiction gaps found in review)[2m > [22mrejects an Unavailable text that suggests the slot is open/bookable: Room 301 is open at that time.[90m 15[2mms[22m[31m[39m
+[31m     → expected true to be false // Object.is equality[39m
+[31m   [31m×[31m validateExplanation: R1 regression (contradiction gaps found in review)[2m > [22mrejects an Unavailable text that suggests the slot is open/bookable: You may reserve it now.[90m 1[2mms[22m[31m[39m
+[31m     → expected true to be false // Object.is equality[39m
+[31m   [31m×[31m validateExplanation: R1 regression (contradiction gaps found in review)[2m > [22mrejects an Unavailable text that suggests the slot is open/bookable: Go ahead and book Room 301.[90m 4[2mms[22m[31m[39m
+[31m     → expected true to be false // Object.is equality[39m
+[31m   [31m×[31m validateExplanation: R1 regression (contradiction gaps found in review)[2m > [22mrejects an Unavailable text that suggests the slot is open/bookable: Room 301 is still open.[90m 5[2mms[22m[31m[39m
+[31m     → expected true to be false // Object.is equality[39m
+[31m   [31m×[31m validateExplanation: R1 regression (contradiction gaps found in review)[2m > [22mrejects an Unavailable text that suggests the slot is open/bookable: You are free to book it.[90m 4[2mms[22m[31m[39m
+[31m     → expected true to be false // Object.is equality[39m
+[31m   [31m×[31m validateExplanation: R1 regression (contradiction gaps found in review)[2m > [22mrejects an Unavailable text that suggests the slot is open/bookable: The slot is bookable.[90m 2[2mms[22m[31m[39m
+[31m     → expected true to be false // Object.is equality[39m
+[31m   [31m×[31m validateExplanation: R1 regression (contradiction gaps found in review)[2m > [22mrejects an Available text that says the slot is taken/unavailable: Sadly the slot is taken.[90m 2[2mms[22m[31m[39m
+[31m     → expected true to be false // Object.is equality[39m
+[31m   [31m×[31m validateExplanation: R1 regression (contradiction gaps found in review)[2m > [22mrejects an Available text that says the slot is taken/unavailable: The room is currently blocked.[90m 1[2mms[22m[31m[39m
+[31m     → expected true to be false // Object.is equality[39m
+[31m   [31m×[31m validateExplanation: R1 regression (contradiction gaps found in review)[2m > [22mrejects an Available text that says the slot is taken/unavailable: This slot is booked.[90m 1[2mms[22m[31m[39m
+[31m     → expected true to be false // Object.is equality[39m
+[31m   [31m×[31m validateExplanation: R1 regression (contradiction gaps found in review)[2m > [22mrejects an Available text that says the slot is taken/unavailable: Room 301 is currently unavailable.[90m 1[2mms[22m[31m[39m
+[31m     → expected true to be false // Object.is equality[39m
+[31m   [31m×[31m validateExplanation: R1 regression (contradiction gaps found in review)[2m > [22mrejects an Available text that says the slot is taken/unavailable: The room is occupied.[90m 1[2mms[22m[31m[39m
+[31m     → expected true to be false // Object.is equality[39m
+[31m   [31m×[31m validateExplanation: R1 regression (contradiction gaps found in review)[2m > [22mrejects an Available text that says the slot is taken/unavailable: The room is full.[90m 1[2mms[22m[31m[39m
+[31m     → expected true to be false // Object.is equality[39m
+[31m   [31m×[31m validateExplanation: R1 regression (contradiction gaps found in review)[2m > [22mrejects an Available text that says the slot is taken/unavailable: Sorry, it cannot be reserved.[90m 1[2mms[22m[31m[39m
+[31m     → expected true to be false // Object.is equality[39m
+
+[31m⎯⎯⎯⎯⎯⎯[1m[7m Failed Tests 13 [27m[22m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[31m[1m[7m FAIL [27m[22m[39m src/explain/validate.test.ts[2m > [22mvalidateExplanation: R1 regression (contradiction gaps found in review)[2m > [22mrejects an Unavailable text that suggests the slot is open/bookable: Room 301 is open at that time.
+[31m[1m[7m FAIL [27m[22m[39m src/explain/validate.test.ts[2m > [22mvalidateExplanation: R1 regression (contradiction gaps found in review)[2m > [22mrejects an Unavailable text that suggests the slot is open/bookable: You may reserve it now.
+[31m[1m[7m FAIL [27m[22m[39m src/explain/validate.test.ts[2m > [22mvalidateExplanation: R1 regression (contradiction gaps found in review)[2m > [22mrejects an Unavailable text that suggests the slot is open/bookable: Go ahead and book Room 301.
+[31m[1m[7m FAIL [27m[22m[39m src/explain/validate.test.ts[2m > [22mvalidateExplanation: R1 regression (contradiction gaps found in review)[2m > [22mrejects an Unavailable text that suggests the slot is open/bookable: Room 301 is still open.
+[31m[1m[7m FAIL [27m[22m[39m src/explain/validate.test.ts[2m > [22mvalidateExplanation: R1 regression (contradiction gaps found in review)[2m > [22mrejects an Unavailable text that suggests the slot is open/bookable: You are free to book it.
+[31m[1m[7m FAIL [27m[22m[39m src/explain/validate.test.ts[2m > [22mvalidateExplanation: R1 regression (contradiction gaps found in review)[2m > [22mrejects an Unavailable text that suggests the slot is open/bookable: The slot is bookable.
+[31m[1mAssertionError[22m: expected true to be false // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- false[39m
+[31m+ true[39m
+
+[36m [2m❯[22m src/explain/validate.test.ts:[2m121:42[22m[39m
+    [90m119| [39m    [32m'The slot is bookable.'[39m[33m,[39m
+    [90m120| [39m  ])([32m'rejects an Unavailable text that suggests the slot is open/booka[39m…
+    [90m121| [39m    [34mexpect[39m([34mvalidateExplanation[39m(text[33m,[39m [33mU[39m))[33m.[39m[34mtoBe[39m([35mfalse[39m)[33m;[39m
+    [90m   | [39m                                         [31m^[39m
+    [90m122| [39m  })[33m;[39m
+    [90m123| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/13]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m src/explain/validate.test.ts[2m > [22mvalidateExplanation: R1 regression (contradiction gaps found in review)[2m > [22mrejects an Available text that says the slot is taken/unavailable: Sadly the slot is taken.
+[31m[1m[7m FAIL [27m[22m[39m src/explain/validate.test.ts[2m > [22mvalidateExplanation: R1 regression (contradiction gaps found in review)[2m > [22mrejects an Available text that says the slot is taken/unavailable: The room is currently blocked.
+[31m[1m[7m FAIL [27m[22m[39m src/explain/validate.test.ts[2m > [22mvalidateExplanation: R1 regression (contradiction gaps found in review)[2m > [22mrejects an Available text that says the slot is taken/unavailable: This slot is booked.
+[31m[1m[7m FAIL [27m[22m[39m src/explain/validate.test.ts[2m > [22mvalidateExplanation: R1 regression (contradiction gaps found in review)[2m > [22mrejects an Available text that says the slot is taken/unavailable: Room 301 is currently unavailable.
+[31m[1m[7m FAIL [27m[22m[39m src/explain/validate.test.ts[2m > [22mvalidateExplanation: R1 regression (contradiction gaps found in review)[2m > [22mrejects an Available text that says the slot is taken/unavailable: The room is occupied.
+[31m[1m[7m FAIL [27m[22m[39m src/explain/validate.test.ts[2m > [22mvalidateExplanation: R1 regression (contradiction gaps found in review)[2m > [22mrejects an Available text that says the slot is taken/unavailable: The room is full.
+[31m[1m[7m FAIL [27m[22m[39m src/explain/validate.test.ts[2m > [22mvalidateExplanation: R1 regression (contradiction gaps found in review)[2m > [22mrejects an Available text that says the slot is taken/unavailable: Sorry, it cannot be reserved.
+[31m[1mAssertionError[22m: expected true to be false // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- false[39m
+[31m+ true[39m
+
+[36m [2m❯[22m src/explain/validate.test.ts:[2m133:42[22m[39m
+    [90m131| [39m    [32m'Sorry, it cannot be reserved.'[39m[33m,[39m
+    [90m132| [39m  ])([32m'rejects an Available text that says the slot is taken/unavailabl[39m…
+    [90m133| [39m    [34mexpect[39m([34mvalidateExplanation[39m(text[33m,[39m [33mA[39m))[33m.[39m[34mtoBe[39m([35mfalse[39m)[33m;[39m
+    [90m   | [39m                                         [31m^[39m
+    [90m134| [39m  })[33m;[39m
+    [90m135| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/13]⎯[22m[39m
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m6 passed[39m[22m[90m (7)[39m
+[2m      Tests [22m [1m[31m13 failed[39m[22m[2m | [22m[1m[32m145 passed[39m[22m[90m (158)[39m
+[2m   Start at [22m 17:07:38
+[2m   Duration [22m 2.15s[2m (transform 658ms, setup 0ms, collect 1.45s, tests 196ms, environment 3ms, prepare 2.09s)[22m
+

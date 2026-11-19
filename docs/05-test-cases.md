@@ -66,7 +66,7 @@ This is still not an acceptance:
 - 4 cases are PARTIAL;
 - scroll checks (TC09, TC15) were visual only;
 - no screenshot files exist yet;
-- the late-response guard passed in the browser (TC14) but still has no unit test.
+- the late-response guard passed in the browser (TC14). *Update (Task 06/07, fix R2):* it now also has unit tests (`src/explain/guard.test.ts`).
 
 ### Additional observations (not in the plan)
 
@@ -84,7 +84,7 @@ This is still not an acceptance:
 No observation contradicted an Expected value. These items are inputs for Task 06 (no fixes were made in this task):
 
 - **F1, surprise (not covered by any Expected):** for 12:00–11:00 the "Requested" line under the form shows a **negative duration, "(-60 min)"**. The status card and the explanation are correct, so this is cosmetic. *Assumption, not verified:* the line existed before the Explain feature (the `Requested:` line is in the baseline `App.tsx`), so it is probably a pre-existing defect, not a regression. Confirming that needs a run of the `practice10-baseline` build. Changing it would be a UI text/layout change, which AGENTS.md forbids unless the human explicitly asks.
-- **F2, coverage gap (narrowed):** the late-response guard now **passed in the browser** (TC14, run 2). That includes the stronger variant: input changed, then Check pressed again while the first request was still pending. It still has **no unit test** (mutation M5 not caught, `docs/03-implementation.md` §5), so a future refactor could break it unnoticed. It remains a candidate for Task 06/07.
+- **F2, coverage gap (narrowed):** the late-response guard now **passed in the browser** (TC14, run 2). That includes the stronger variant: input changed, then Check pressed again while the first request was still pending. At the time of this run it had **no unit test** (mutation M5 not caught). *Update (Task 06/07, fix R2):* resolved. The guard is now `src/explain/guard.ts` with 8 unit tests, and M5 is caught (`docs/03-implementation.md` §5, `evidence/09_fix_r2_mutation.txt`).
 - **F3, resolved in run 2:** TC13 and TC16 were run and passed.
 - **F4, method gap (narrowed):** TC17 run 2 saw no new request on the Explain click in the default mode. The `?explainMock=error` part was not checked. XAC3 otherwise rests on the static grep (`evidence/06_after_task03_xac3_grep.txt`).
 - **F5, partial observations:**
@@ -113,7 +113,7 @@ This shows which automated tests already cover the same **logic**. The manual ca
 | TC11 | `explain.test.ts` › error mode falls back | rendering, no error text shown |
 | TC12 | `explain.test.ts` › nokey mode falls back | rendering |
 | TC13 | `explain.test.ts` › XAC2 …; `availability.test.ts` › does not modify the bookings array; `time.test.ts` › does not mutate fixtures | repeated clicks in UI |
-| TC14 | **none**: the late-response guard lives in `App.tsx` (mutation M5 in `docs/03-implementation.md` §5 was not caught) | **all of it** |
+| TC14 | `guard.test.ts` › applyExplainResult / isCurrentExplain (added in Task 06/07, fix R2; before that: none, M5 not caught) | wiring of the helper into `App.tsx`, rendering |
 | TC15 | none | **all of it** (layout) |
 | TC16 | none | **all of it** |
 | TC17 | none (only the static XAC3 grep, `evidence/06_after_task03_xac3_grep.txt`) | runtime network behaviour |

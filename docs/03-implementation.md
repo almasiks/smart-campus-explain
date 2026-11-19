@@ -85,7 +85,9 @@ Details of what Task 05 must check:
 - a late response is ignored after "Clear result", an input change, the blocked toggle or a new check while a timeout request is pending;
 - the status card is visually unchanged, at 1280 px and 375 px (XAC5, AC6).
 
-The stale-response guard and the rendering are React state logic, and there is no DOM test library (new dependencies are forbidden). So these rest on code review plus the manual check above, not on automated tests.
+The rendering is React state logic, and there is no DOM test library (new dependencies are forbidden), so it rests on the manual check above.
+
+*Update (Task 06/07, fix R2):* the stale-response guard is no longer inline. It is now the pure helper `src/explain/guard.ts`, unit-tested in `guard.test.ts` (8 tests), so it is covered by automated tests. Only its wiring into `App.tsx` remains manual (Task 05 TC14).
 
 ## 5. Mutation checks
 
@@ -110,7 +112,17 @@ export function acceptExplanation<T>(prev: { target: T; result: Explanation | nu
 
 Then unit-test four cases: a response for the current target is stored; a response after the result was cleared is not shown; a response for an older target doesn't overwrite a newer pending request; the pending state shows only for the current target. This would be a small `App.tsx` refactor with no visible change. Until then, M5 is covered only by the manual browser check planned for Task 05.
 
+**Update (Task 06/07, fix R2): M5 is now caught.** The guard was extracted to `src/explain/guard.ts` (`isCurrentExplain`, `applyExplainResult`), and `App.tsx` uses it with no visible change: the CSS selector set is identical before and after, see `evidence/09_fix_r2_mutation.txt` §4. The mutation was re-run in the throwaway copy at `3e6bc36` plus the fix:
+
+| Mutation | Observed (`npm test`) | Caught by |
+|---|---|---|
+| **M5a**: `applyExplainResult` accepts any late response (target check removed) | **2 failed**, 164 passed, exit 1 | `guard.test.ts` › ignores a stale response when a newer request is pending; › ignores a stale response even when the targets are deep-equal but not the same object |
+| **M5b**: `isCurrentExplain` ignores which result is displayed (identity check removed) | **3 failed**, 163 passed, exit 1 | `guard.test.ts` › is false after the result was replaced; › is false after the result was cleared, and for a null state; › late-response sequence |
+
+Red before the fix: `evidence/09_fix_r2_red.txt` (module not found). Green after it: `evidence/09_fix_r2_green.txt` (166/166).
+
 ## 6. Notes / follow-ups
 
 - The "Open questions" in `docs/02-feature-contract.md` (how the reason code is obtained, the phrase lists) are answered here in §2 and §3. The contract text itself was only changed by the approved Amendments section.
 - The phrase lists are a safety net, not a proof. A real LLM could still phrase a contradiction in words the lists don't cover. Only the mock adapter is wired up, and no real model call exists.
+- *Update (Task 06/07, fix R1):* small phrase patterns were added (`UNAVAILABLE_FORBIDDEN_PATTERNS`, `AVAILABLE_FORBIDDEN_PATTERNS` in `validate.ts`), e.g. `is/are [currently|already|still|now|actually] open|free|bookable` and `go ahead and book`. They close the gaps found in review: "is open", "may reserve", "go ahead and book", "free to book", "is taken", "is currently blocked", "is booked", "is occupied", "cannot be reserved". They are still phrase-level, so "is not blocked" / "is not open" are accepted. Wording that avoids these verbs can still pass. Red: `evidence/09_fix_r1_red.txt` (13 failed); green: `evidence/09_fix_r1_green.txt` (158/158).

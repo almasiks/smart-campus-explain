@@ -1,0 +1,21 @@
+
+> vite-react-typescript-starter@0.0.0 test
+> vitest run
+
+
+[1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90mC:/Users/ACER/OneDrive/Рабочий стол/Hw_fall26/Cybersecurity/New_bolt[39m
+
+ [32m✓[39m src/explain/guard.test.ts [2m([22m[2m8 tests[22m[2m)[22m[90m 13[2mms[22m[39m
+ [32m✓[39m src/availability.test.ts [2m([22m[2m12 tests[22m[2m)[22m[90m 13[2mms[22m[39m
+ [32m✓[39m src/availability.code.test.ts [2m([22m[2m8 tests[22m[2m)[22m[90m 13[2mms[22m[39m
+ [32m✓[39m src/time.test.ts [2m([22m[2m16 tests[22m[2m)[22m[90m 17[2mms[22m[39m
+ [32m✓[39m src/explain/context.test.ts [2m([22m[2m13 tests[22m[2m)[22m[90m 13[2mms[22m[39m
+ [32m✓[39m src/explain/prompt.test.ts [2m([22m[2m39 tests[22m[2m)[22m[90m 35[2mms[22m[39m
+ [32m✓[39m src/explain/validate.test.ts [2m([22m[2m49 tests[22m[2m)[22m[90m 45[2mms[22m[39m
+ [32m✓[39m src/explain/explain.test.ts [2m([22m[2m21 tests[22m[2m)[22m[90m 39[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m8 passed[39m[22m[90m (8)[39m
+[2m      Tests [22m [1m[32m166 passed[39m[22m[90m (166)[39m
+[2m   Start at [22m 17:08:46
+[2m   Duration [22m 1.73s[2m (transform 767ms, setup 0ms, collect 1.65s, tests 188ms, environment 3ms, prepare 1.85s)[22m
+

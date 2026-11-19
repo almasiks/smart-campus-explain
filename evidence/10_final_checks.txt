@@ -1,0 +1,58 @@
+# Final checks — 2026-11-19T12:11Z (UTC), working tree with R1+R2 applied
+
+$ npm test
+
+> vite-react-typescript-starter@0.0.0 test
+> vitest run
+
+
+ RUN  v2.1.9 C:/Users/ACER/OneDrive/Рабочий стол/Hw_fall26/Cybersecurity/New_bolt
+
+ ✓ src/explain/guard.test.ts (8 tests) 9ms
+ ✓ src/availability.code.test.ts (8 tests) 13ms
+ ✓ src/availability.test.ts (12 tests) 13ms
+ ✓ src/time.test.ts (16 tests) 13ms
+ ✓ src/explain/context.test.ts (13 tests) 16ms
+ ✓ src/explain/prompt.test.ts (39 tests) 30ms
+ ✓ src/explain/explain.test.ts (21 tests) 39ms
+ ✓ src/explain/validate.test.ts (49 tests) 42ms
+
+ Test Files  8 passed (8)
+      Tests  166 passed (166)
+   Start at  17:11:24
+   Duration  1.97s (transform 779ms, setup 0ms, collect 1.52s, tests 174ms, environment 3ms, prepare 2.29s)
+
+(exit 0)
+
+$ npm run typecheck
+
+> vite-react-typescript-starter@0.0.0 typecheck
+> tsc --noEmit -p tsconfig.app.json
+
+(exit 0)
+
+$ npm run lint
+
+> vite-react-typescript-starter@0.0.0 lint
+> eslint .
+
+(exit 0)
+
+$ npm run build
+
+> vite-react-typescript-starter@0.0.0 build
+> vite build
+
+vite v5.4.8 building for production...
+transforming...
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✓ 1577 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.70 kB │ gzip:  0.38 kB
+dist/assets/index-C5bJ6pjM.css   16.32 kB │ gzip:  3.52 kB
+dist/assets/index-BWX3v8N7.js   167.42 kB │ gzip: 52.81 kB
+✓ built in 5.08s
+(exit 0)
