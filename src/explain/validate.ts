@@ -50,6 +50,32 @@ export const BOOKING_MADE_FORBIDDEN = [
   'your reservation',
 ];
 
+/*
+ * R1 (Task 06/07): small phrase PATTERNS on top of the lists above, so common
+ * variants are caught without listing every wording. Still phrase-level:
+ * "is not blocked" / "is not open" do not match because "not" is not an allowed
+ * filler word between the verb and the state word.
+ */
+const FILLER = '(?:\\s+(?:currently|already|still|now|actually))?';
+
+/** Unavailable result: text must not suggest the slot is open or bookable. */
+export const UNAVAILABLE_FORBIDDEN_PATTERNS: readonly RegExp[] = [
+  new RegExp(`\\b(?:is|are)${FILLER}\\s+(?:open|free|available|bookable)\\b`, 'i'),
+  /\b(?:can|may|could)\s+(?:still\s+)?(?:book|reserve)\b/i,
+  /\bfree\s+to\s+(?:book|reserve)\b/i,
+  /\bgo\s+ahead\s+and\s+(?:book|reserve)\b/i,
+];
+
+/** Available result: text must not say the slot is taken or unavailable. */
+export const AVAILABLE_FORBIDDEN_PATTERNS: readonly RegExp[] = [
+  new RegExp(`\\b(?:is|are)${FILLER}\\s+(?:taken|booked|unavailable|blocked|occupied|full)\\b`, 'i'),
+  /\b(?:cannot|can't|can\s+not)\s+be\s+(?:booked|reserved|used)\b/i,
+];
+
+function matchesAny(text: string, patterns: readonly RegExp[]): boolean {
+  return patterns.some((p) => p.test(text));
+}
+
 function escapeRegExp(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
@@ -104,7 +130,9 @@ export function validateExplanation(text: unknown, ctx: ExplainContext): boolean
   if (t.length === 0 || t.length > MAX_EXPLANATION_LENGTH) return false;
   if (countSentences(t) > MAX_SENTENCES) return false;
   if (ctx.status === 'Unavailable' && containsPhrase(t, UNAVAILABLE_FORBIDDEN)) return false;
+  if (ctx.status === 'Unavailable' && matchesAny(t, UNAVAILABLE_FORBIDDEN_PATTERNS)) return false;
   if (ctx.status === 'Available' && containsPhrase(t, AVAILABLE_FORBIDDEN)) return false;
+  if (ctx.status === 'Available' && matchesAny(t, AVAILABLE_FORBIDDEN_PATTERNS)) return false;
   if (containsPhrase(t, BOOKING_MADE_FORBIDDEN)) return false;
   return usesOnlyContextFacts(t, ctx);
 }

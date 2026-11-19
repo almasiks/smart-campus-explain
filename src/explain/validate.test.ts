@@ -107,3 +107,36 @@ describe('fallback and mock texts', () => {
     expect(validateExplanation(GENERIC_FALLBACK_TEXT, U)).toBe(true);
   });
 });
+
+describe('validateExplanation: R1 regression (contradiction gaps found in review)', () => {
+  it.each([
+    'Room 301 is open at that time.',
+    'You may reserve it now.',
+    'Go ahead and book Room 301.',
+    'Room 301 is still open.',
+    'You are free to book it.',
+    'You can reserve it.',
+    'The slot is bookable.',
+  ])('rejects an Unavailable text that suggests the slot is open/bookable: %s', (text) => {
+    expect(validateExplanation(text, U)).toBe(false);
+  });
+
+  it.each([
+    'Sadly the slot is taken.',
+    'The room is currently blocked.',
+    'This slot is booked.',
+    'Room 301 is currently unavailable.',
+    'The room is occupied.',
+    'The room is full.',
+    'Sorry, it cannot be reserved.',
+  ])('rejects an Available text that says the slot is taken/unavailable: %s', (text) => {
+    expect(validateExplanation(text, A)).toBe(false);
+  });
+
+  it('still accepts the control and negated look-alikes', () => {
+    expect(validateExplanation('Room 301 is available.', A)).toBe(true);
+    expect(validateExplanation('The room is not blocked and the time is free.', A)).toBe(true);
+    expect(validateExplanation('Room 301 is not open for this request.', U)).toBe(true);
+    expect(validateExplanation('This is only a check; nothing is reserved.', A)).toBe(true);
+  });
+});
