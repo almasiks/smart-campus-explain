@@ -1,0 +1,402 @@
+# Practice #11 Task 03 — mutation checks
+# Run in throwaway copy: smart-campus-mutation (git HEAD 08d0748); real repo untouched.
+# Date (UTC): 2026-11-19T10:48Z
+# Each mutation: apply -> show git diff -> npm test -> git checkout (restore) -> verify clean.
+
+======================================================================
+## M1: AC3 branch returns code 'OVERLAP' instead of 'ROOM_BLOCKED'
+$ sed -i 's/code: 'ROOM_BLOCKED',/code: 'OVERLAP',/' src/availability.ts
+warning: in the working copy of 'src/availability.ts', LF will be replaced by CRLF the next time Git touches it
+$ git diff -- src/availability.ts
+warning: in the working copy of 'src/availability.ts', LF will be replaced by CRLF the next time Git touches it
+diff --git a/src/availability.ts b/src/availability.ts
+index 1cf17dd..c81159f 100644
+--- a/src/availability.ts
++++ b/src/availability.ts
+@@ -87,7 +87,7 @@ export function checkAvailability(
+     return {
+       status: 'Unavailable',
+       rule: 'AC3',
+-      code: 'ROOM_BLOCKED',
++      code: 'OVERLAP',
+       reason: `The room is currently blocked. All availability requests are rejected while blocked.`,
+     };
+   }
+$ npm test
+
+> vite-react-typescript-starter@0.0.0 test
+> vitest run
+
+
+ RUN  v2.1.9 C:/Users/ACER/OneDrive/Рабочий стол/Hw_fall26/Cybersecurity/smart-campus-mutation
+
+ ✓ src/availability.test.ts (12 tests) 7ms
+ ❯ src/availability.code.test.ts (8 tests | 1 failed) 19ms
+   × checkAvailability reason codes > returns ROOM_BLOCKED with AC3 11ms
+     → expected { status: 'Unavailable', …(3) } to match object { rule: 'AC3', code: 'ROOM_BLOCKED' }
+(2 matching properties omitted from actual)
+ ✓ src/time.test.ts (16 tests) 7ms
+ ❯ src/explain/context.test.ts (13 tests | 2 failed) 21ms
+   × buildContext > builds DURATION_TOO_LONG and ROOM_BLOCKED with their facts 11ms
+     → expected { room: 'Room 301', …(9) } to match object { rule: 'AC3', …(1) }
+(8 matching properties omitted from actual)
+   × validateContext > accepts every context built from the real checker 2ms
+     → ROOM_BLOCKED: expected false to be true // Object.is equality
+ ✓ src/explain/validate.test.ts (34 tests) 21ms
+ ❯ src/explain/explain.test.ts (21 tests | 1 failed) 41ms
+   × explain() with the mock adapter > ok mode returns the mock text with source "mock" for ROOM_BLOCKED 12ms
+     → expected { …(2) } to deeply equal { …(2) }
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/availability.code.test.ts > checkAvailability reason codes > returns ROOM_BLOCKED with AC3
+AssertionError: expected { status: 'Unavailable', …(3) } to match object { rule: 'AC3', code: 'ROOM_BLOCKED' }
+(2 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  Object {
+-   "code": "ROOM_BLOCKED",
++   "code": "OVERLAP",
+    "rule": "AC3",
+  }
+
+ ❯ src/availability.code.test.ts:35:43
+     33| 
+     34|   it('returns ROOM_BLOCKED with AC3', () => {
+     35|     expect(check(780, 840, BLOCKED_ROOM)).toMatchObject({ rule: 'AC3',…
+       |                                           ^
+     36|   });
+     37| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  src/explain/context.test.ts > buildContext > builds DURATION_TOO_LONG and ROOM_BLOCKED with their facts
+AssertionError: expected { room: 'Room 301', …(9) } to match object { rule: 'AC3', …(1) }
+(8 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  Object {
+-   "reasonCode": "ROOM_BLOCKED",
++   "reasonCode": "OVERLAP",
+    "rule": "AC3",
+  }
+
+ ❯ src/explain/context.test.ts:43:35
+     41|   it('builds DURATION_TOO_LONG and ROOM_BLOCKED with their facts', () …
+     42|     expect(CONTEXTS.DURATION_TOO_LONG).toMatchObject({ rule: 'AC2', du…
+     43|     expect(CONTEXTS.ROOM_BLOCKED).toMatchObject({ rule: 'AC3', reasonC…
+       |                                   ^
+     44|   });
+     45| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  src/explain/context.test.ts > validateContext > accepts every context built from the real checker
+AssertionError: ROOM_BLOCKED: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/explain/context.test.ts:69:53
+     67|   it('accepts every context built from the real checker', () => {
+     68|     for (const code of REASON_CODES) {
+     69|       expect(validateContext(CONTEXTS[code]), code).toBe(true);
+       |                                                     ^
+     70|     }
+     71|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  src/explain/explain.test.ts > explain() with the mock adapter > ok mode returns the mock text with source "mock" for ROOM_BLOCKED
+AssertionError: expected { …(2) } to deeply equal { …(2) }
+
+- Expected
++ Received
+
+  Object {
+-   "source": "mock",
+-   "text": "Unfortunately this time clashes with an existing booking.",
++   "source": "fallback",
++   "text": "No explanation can be shown right now. Please rely on the status shown above.",
+  }
+
+ ❯ src/explain/explain.test.ts:26:22
+     24|     async (code) => {
+     25|       const result = await explain(CONTEXTS[code], mockAdapter('ok'));
+     26|       expect(result).toEqual({ text: mockText(CONTEXTS[code]), source:…
+       |                      ^
+     27|     }
+     28|   );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+ Test Files  3 failed | 3 passed (6)
+      Tests  4 failed | 100 passed (104)
+   Start at  15:48:56
+   Duration  1.43s (transform 336ms, setup 0ms, collect 668ms, tests 116ms, environment 1ms, prepare 5.28s)
+
+(npm test exit code: 1)
+(restored: src/availability.ts is identical to HEAD)
+
+======================================================================
+## M2: remove the 'Unavailable text must not say available' check
+$ sed -i '/ctx.status === 'Unavailable' && containsPhrase(t, UNAVAILABLE_FORBIDDEN)/d' src/explain/validate.ts
+warning: in the working copy of 'src/explain/validate.ts', LF will be replaced by CRLF the next time Git touches it
+$ git diff -- src/explain/validate.ts
+warning: in the working copy of 'src/explain/validate.ts', LF will be replaced by CRLF the next time Git touches it
+diff --git a/src/explain/validate.ts b/src/explain/validate.ts
+index 20f8253..17c0561 100644
+--- a/src/explain/validate.ts
++++ b/src/explain/validate.ts
+@@ -103,7 +103,6 @@ export function validateExplanation(text: unknown, ctx: ExplainContext): boolean
+   const t = text.trim();
+   if (t.length === 0 || t.length > MAX_EXPLANATION_LENGTH) return false;
+   if (countSentences(t) > MAX_SENTENCES) return false;
+-  if (ctx.status === 'Unavailable' && containsPhrase(t, UNAVAILABLE_FORBIDDEN)) return false;
+   if (ctx.status === 'Available' && containsPhrase(t, AVAILABLE_FORBIDDEN)) return false;
+   if (containsPhrase(t, BOOKING_MADE_FORBIDDEN)) return false;
+   return usesOnlyContextFacts(t, ctx);
+$ npm test
+
+> vite-react-typescript-starter@0.0.0 test
+> vitest run
+
+
+ RUN  v2.1.9 C:/Users/ACER/OneDrive/Рабочий стол/Hw_fall26/Cybersecurity/smart-campus-mutation
+
+ ✓ src/availability.code.test.ts (8 tests) 8ms
+ ✓ src/availability.test.ts (12 tests) 8ms
+ ✓ src/time.test.ts (16 tests) 9ms
+ ✓ src/explain/context.test.ts (13 tests) 8ms
+ ❯ src/explain/validate.test.ts (34 tests | 1 failed) 28ms
+   × validateExplanation: contradictions (phrase-level) > rejects an Unavailable text that says the room can be booked 10ms
+     → expected true to be false // Object.is equality
+ ❯ src/explain/explain.test.ts (21 tests | 1 failed) 35ms
+   × explain() never throws and validates output > falls back when the output contradicts the status 11ms
+     → expected 'llm' to be 'fallback' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/explain/explain.test.ts > explain() never throws and validates output > falls back when the output contradicts the status
+AssertionError: expected 'llm' to be 'fallback' // Object.is equality
+
+Expected: "fallback"
+Received: "llm"
+
+ ❯ src/explain/explain.test.ts:72:50
+     70|   it('falls back when the output contradicts the status', async () => {
+     71|     const adapter = fakeAdapter(async () => 'Room 301 is available.');
+     72|     expect((await explain(ctx, adapter)).source).toBe('fallback');
+       |                                                  ^
+     73|   });
+     74| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  src/explain/validate.test.ts > validateExplanation: contradictions (phrase-level) > rejects an Unavailable text that says the room can be booked
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/explain/validate.test.ts:37:62
+     35| describe('validateExplanation: contradictions (phrase-level)', () => {
+     36|   it('rejects an Unavailable text that says the room can be booked', (…
+     37|     expect(validateExplanation('Room 301 is available.', U)).toBe(fals…
+       |                                                              ^
+     38|     expect(validateExplanation('Room 301 can be booked.', U)).toBe(fal…
+     39|     expect(validateExplanation('Good news, you can book it.', U)).toBe…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+ Test Files  2 failed | 4 passed (6)
+      Tests  2 failed | 102 passed (104)
+   Start at  15:48:59
+   Duration  1.09s (transform 451ms, setup 0ms, collect 836ms, tests 94ms, environment 2ms, prepare 831ms)
+
+(npm test exit code: 1)
+(restored: src/explain/validate.ts is identical to HEAD)
+
+======================================================================
+## M3: remove the 3 s timeout (await the adapter promise without a timer)
+$ sed -i 's/const text = await Promise.race(\[call, timeout\]);/const text = await call;/' src/explain/explain.ts
+warning: in the working copy of 'src/explain/explain.ts', LF will be replaced by CRLF the next time Git touches it
+$ git diff -- src/explain/explain.ts
+warning: in the working copy of 'src/explain/explain.ts', LF will be replaced by CRLF the next time Git touches it
+diff --git a/src/explain/explain.ts b/src/explain/explain.ts
+index 4532095..b2b3085 100644
+--- a/src/explain/explain.ts
++++ b/src/explain/explain.ts
+@@ -55,7 +55,7 @@ export async function explain(
+       timer = setTimeout(() => reject(new Error('explain timeout')), timeoutMs);
+     });
+     const call = Promise.resolve().then(() => adapter.explain(copyContext(ctx)));
+-    const text = await Promise.race([call, timeout]);
++    const text = await call;
+     if (validateExplanation(text, ctx)) {
+       return { text: text.trim(), source: adapter.source };
+     }
+$ npm test
+
+> vite-react-typescript-starter@0.0.0 test
+> vitest run
+
+
+ RUN  v2.1.9 C:/Users/ACER/OneDrive/Рабочий стол/Hw_fall26/Cybersecurity/smart-campus-mutation
+
+ ✓ src/availability.test.ts (12 tests) 7ms
+ ✓ src/availability.code.test.ts (8 tests) 8ms
+ ✓ src/time.test.ts (16 tests) 6ms
+ ✓ src/explain/context.test.ts (13 tests) 9ms
+ ✓ src/explain/validate.test.ts (34 tests) 19ms
+ ❯ src/explain/explain.test.ts (21 tests | 1 failed) 5025ms
+   × explain() with the mock adapter > timeout mode falls back after exactly 3 s 5007ms
+     → Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/explain/explain.test.ts > explain() with the mock adapter > timeout mode falls back after exactly 3 s
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 1 unhandled error during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+Error: explain timeout
+ ❯ src/explain/explain.ts:55:39
+     53|   try {
+     54|     const timeout = new Promise<never>((_, reject) => {
+     55|       timer = setTimeout(() => reject(new Error('explain timeout')), t…
+       |                                       ^
+     56|     });
+     57|     const call = Promise.resolve().then(() => adapter.explain(copyCont…
+ ❯ callTimer ../../../../%D0%A0%D0%B0%D0%B1%D0%BE%D1%87%D0%B8%D0%B9%20%D1%81%D1%82%D0%BE%D0%BB/Hw_fall26/Cybersecurity/smart-campus-mutation/node_modules/vitest/dist/chunks/vi.DgezovHB.js:2300:25
+ ❯ doTickInner ../../../../%D0%A0%D0%B0%D0%B1%D0%BE%D1%87%D0%B8%D0%B9%20%D1%81%D1%82%D0%BE%D0%BB/Hw_fall26/Cybersecurity/smart-campus-mutation/node_modules/vitest/dist/chunks/vi.DgezovHB.js:2886:30
+ ❯ doTick ../../../../%D0%A0%D0%B0%D0%B1%D0%BE%D1%87%D0%B8%D0%B9%20%D1%81%D1%82%D0%BE%D0%BB/Hw_fall26/Cybersecurity/smart-campus-mutation/node_modules/vitest/dist/chunks/vi.DgezovHB.js:2967:21
+ ❯ Immediate.<anonymous> ../../../../%D0%A0%D0%B0%D0%B1%D0%BE%D1%87%D0%B8%D0%B9%20%D1%81%D1%82%D0%BE%D0%BB/Hw_fall26/Cybersecurity/smart-campus-mutation/node_modules/vitest/dist/chunks/vi.DgezovHB.js:2987:30
+ ❯ processImmediate node:internal/timers:504:21
+
+This error originated in "src/explain/explain.test.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "timeout mode falls back after exactly 3 s". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+ Test Files  1 failed | 5 passed (6)
+      Tests  1 failed | 103 passed (104)
+     Errors  1 error
+   Start at  15:49:01
+   Duration  6.14s (transform 374ms, setup 0ms, collect 703ms, tests 5.07s, environment 2ms, prepare 858ms)
+
+(npm test exit code: 1)
+(restored: src/explain/explain.ts is identical to HEAD)
+
+======================================================================
+## M4: ok-mode OVERLAP mock text mentions 15:45, a time not in the context
+$ sed -i 's/Try a different time that does not overlap it\./Try 15:45 instead./' src/explain/mockAdapter.ts
+warning: in the working copy of 'src/explain/mockAdapter.ts', LF will be replaced by CRLF the next time Git touches it
+$ git diff -- src/explain/mockAdapter.ts
+warning: in the working copy of 'src/explain/mockAdapter.ts', LF will be replaced by CRLF the next time Git touches it
+diff --git a/src/explain/mockAdapter.ts b/src/explain/mockAdapter.ts
+index 1bfa8c9..f42e1c8 100644
+--- a/src/explain/mockAdapter.ts
++++ b/src/explain/mockAdapter.ts
+@@ -35,7 +35,7 @@ export function mockText(ctx: ExplainContext): string {
+       return `Sorry, ${c.room} is blocked at the moment, so all requests are turned down. Please check again later.`;
+     case 'OVERLAP':
+       return c.conflict
+-        ? `Unfortunately ${c.start}–${c.end} clashes with an existing booking from ${c.conflict.start} to ${c.conflict.end}. Try a different time that does not overlap it.`
++        ? `Unfortunately ${c.start}–${c.end} clashes with an existing booking from ${c.conflict.start} to ${c.conflict.end}. Try 15:45 instead.`
+         : 'Unfortunately this time clashes with an existing booking.';
+     case 'INPUT_INVALID':
+       return 'Hmm, those times could not be read. Please type them as HH:MM and check again.';
+$ npm test
+
+> vite-react-typescript-starter@0.0.0 test
+> vitest run
+
+
+ RUN  v2.1.9 C:/Users/ACER/OneDrive/Рабочий стол/Hw_fall26/Cybersecurity/smart-campus-mutation
+
+ ✓ src/availability.code.test.ts (8 tests) 9ms
+ ✓ src/availability.test.ts (12 tests) 8ms
+ ✓ src/time.test.ts (16 tests) 8ms
+ ✓ src/explain/context.test.ts (13 tests) 9ms
+ ❯ src/explain/validate.test.ts (34 tests | 1 failed) 28ms
+   × fallback and mock texts > mock text for OVERLAP passes the validator 11ms
+     → expected false to be true // Object.is equality
+ ❯ src/explain/explain.test.ts (21 tests | 1 failed) 39ms
+   × explain() with the mock adapter > ok mode returns the mock text with source "mock" for OVERLAP 13ms
+     → expected { …(2) } to deeply equal { …(2) }
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/explain/explain.test.ts > explain() with the mock adapter > ok mode returns the mock text with source "mock" for OVERLAP
+AssertionError: expected { …(2) } to deeply equal { …(2) }
+
+- Expected
++ Received
+
+  Object {
+-   "source": "mock",
+-   "text": "Unfortunately 10:30–11:30 clashes with an existing booking from 10:00 to 11:00. Try 15:45 instead.",
++   "source": "fallback",
++   "text": "The requested time 10:30–11:30 overlaps an existing booking from 10:00 to 11:00.",
+  }
+
+ ❯ src/explain/explain.test.ts:26:22
+     24|     async (code) => {
+     25|       const result = await explain(CONTEXTS[code], mockAdapter('ok'));
+     26|       expect(result).toEqual({ text: mockText(CONTEXTS[code]), source:…
+       |                      ^
+     27|     }
+     28|   );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  src/explain/validate.test.ts > fallback and mock texts > mock text for OVERLAP passes the validator
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/explain/validate.test.ts:98:75
+     96| 
+     97|   it.each(REASON_CODES)('mock text for %s passes the validator', (code…
+     98|     expect(validateExplanation(mockText(CONTEXTS[code]), CONTEXTS[code…
+       |                                                                           ^
+     99|   });
+    100| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+ Test Files  2 failed | 4 passed (6)
+      Tests  2 failed | 102 passed (104)
+   Start at  15:49:09
+   Duration  1.03s (transform 325ms, setup 0ms, collect 702ms, tests 101ms, environment 1ms, prepare 738ms)
+
+(npm test exit code: 1)
+(restored: src/explain/mockAdapter.ts is identical to HEAD)
+
+======================================================================
+## Final state of the copy
+$ git status --short
+(empty output = copy is clean)

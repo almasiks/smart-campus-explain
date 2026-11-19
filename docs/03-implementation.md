@@ -87,7 +87,30 @@ Details of what Task 05 must check:
 
 The stale-response guard and the rendering are React state logic, and there is no DOM test library (new dependencies are forbidden). So these rest on code review plus the manual check above, not on automated tests.
 
-## 5. Notes / follow-ups
+## 5. Mutation checks
+
+These were run in a throwaway copy of the repo (`../smart-campus-mutation`, at commit `08d0748`), never in the real folder. Each mutation was applied with `sed`, confirmed by `git diff`, tested with `npm test`, and then restored with `git checkout` (restore confirmed). The full real output is in `evidence/07_mutation_checks.txt`. Baseline for comparison: 104/104 passing.
+
+| Mutation | Expected | Observed (`npm test`) | Caught by which test |
+|---|---|---|---|
+| **M1**: AC3 branch returns `code: 'OVERLAP'` instead of `'ROOM_BLOCKED'` (`availability.ts`) | caught | **4 failed**, 100 passed, exit 1 | `availability.code.test.ts` › returns ROOM_BLOCKED with AC3. `context.test.ts` › builds DURATION_TOO_LONG and ROOM_BLOCKED with their facts. `context.test.ts` › accepts every context built from the real checker. `explain.test.ts` › ok mode returns the mock text … for ROOM_BLOCKED |
+| **M2**: remove the "Unavailable text must not say available" check (`validate.ts`) | caught | **2 failed**, 102 passed, exit 1 | `validate.test.ts` › rejects an Unavailable text that says the room can be booked. `explain.test.ts` › falls back when the output contradicts the status |
+| **M3**: remove the 3 s timeout, `await call` without a timer (`explain.ts`) | caught | **1 failed**, 103 passed, exit 1 | `explain.test.ts` › timeout mode falls back after exactly 3 s. Note: it failed through Vitest's 5000 ms test timeout ("Test timed out in 5000ms"), not through an assertion, because `explain()` never resolves without the timer. It is still a real failure, but the failure message is indirect. |
+| **M4**: ok-mode OVERLAP mock text mentions 15:45, a time not in the context (`mockAdapter.ts`) | caught | **2 failed**, 102 passed, exit 1 | `validate.test.ts` › mock text for OVERLAP passes the validator. `explain.test.ts` › ok mode returns the mock text … for OVERLAP |
+| **M5**: late-response guard in `App.tsx` (`prev.target === target` / `explained.target === submitted`) | — | **not run: there is no unit test for it** | **None.** The guard lives in React state inside `App.tsx`, and no DOM test library is installed (new dependencies are forbidden). Breaking it would not fail any current test. |
+
+**Not caught: M5.** Proposed test (not implemented; needs approval): move the two guard expressions into a pure helper in `src/explain/`, e.g.
+
+```ts
+// returns the state to keep when a response for `target` arrives
+export function acceptExplanation<T>(prev: { target: T; result: Explanation | null } | null,
+                                     target: T, result: Explanation) { … }
+// and: isCurrent(explained, submitted): boolean
+```
+
+Then unit-test four cases: a response for the current target is stored; a response after the result was cleared is not shown; a response for an older target doesn't overwrite a newer pending request; the pending state shows only for the current target. This would be a small `App.tsx` refactor with no visible change. Until then, M5 is covered only by the manual browser check planned for Task 05.
+
+## 6. Notes / follow-ups
 
 - The "Open questions" in `docs/02-feature-contract.md` (how the reason code is obtained, the phrase lists) are answered here in §2 and §3. The contract text itself was only changed by the approved Amendments section.
 - The phrase lists are a safety net, not a proof. A real LLM could still phrase a contradiction in words the lists don't cover. Only the mock adapter is wired up, and no real model call exists.
