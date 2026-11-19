@@ -41,6 +41,8 @@ Each command was run once from the project root. Its full stdout and stderr were
 
 Note: `PRACTICE09_REPORT.md` §5 records 26/26 tests after Practice #09. The current baseline has 28. The two extra tests are the "R1 regression" tests at `src/availability.test.ts:66-74` (NaN and non-integer minutes). This agrees with the "Practice #10 source" label.
 
+Note on npm audit (**unverified assumption**): npm audit reported 24 vulnerabilities (2 critical, 13 high) at baseline. They were not investigated and are assumed to be in dev tooling. They were not fixed because AGENTS.md forbids dependency changes. Only the count in `evidence/00_install.txt` is a verified fact. The location of the vulnerabilities (dev tooling vs. runtime) has not been checked.
+
 ## 4. Repository map
 
 ```
