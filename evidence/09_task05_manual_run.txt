@@ -1,0 +1,117 @@
+Task 05 — manual run of docs/05-test-cases.md (screenshots for evidence)
+Date: 2026-11-25
+Browser: Microsoft Edge 158.0.4370.33, headless, driven over the DevTools protocol by a throw-away Node script
+         kept OUTSIDE the repo (session scratchpad). No dependency added, no project file changed.
+         Page ops: real keyboard events (Ctrl+A, Backspace) + Input.insertText into the fields; buttons and the
+         Blocked switch were clicked via element.click() in the page. Not a human with a mouse.
+Server: npm run dev -> http://localhost:5173/  (query strings as noted per case)
+Viewport: "1280" = emulated 1280x800 (page innerWidth reads 1265 because of the vertical scrollbar);
+          "375" = emulated mobile 375x812. Screenshots are full-page (captureBeyondViewport).
+Fixture: Room 301, now 09:00, one booking 10:00-11:00, not blocked (confirmed on screen in screenshots).
+Page reloaded (navigate) before each case.
+Observed text below = innerText read from the page after the actions, plus screenshots.
+I looked at the images of TC15_375, TC13_1280, TC10_pending_1280 only; for all other
+screenshots the observation comes from the page text, not from viewing the PNG.
+Horizontal scroll: measured as documentElement.scrollWidth > clientWidth (false everywhere below).
+
+------------------------------------------------------------------------------------------------
+TC01  URL /   1280 + 375   Start 11:00, End 12:00 -> Check -> Explain
+  Observed: "Available"; text "Room 301 is available from 11:00 to 12:00. This is a check only — no booking was made."
+            No "Failed rule" line. Panel label "AI-generated explanation (demo) — not a booking confirmation";
+            text "Good news: Room 301 is free from 11:00 to 12:00, a 60-minute slot. Remember, this is just a check and nothing is reserved."
+            Panel is below the status card (page order in text). hscroll=false at both widths.
+  Result: PASS     Files: TC01_available_1280.png, TC01_available_375.png
+
+TC02  URL /   1280   10:30-11:30 -> Check -> Explain
+  Observed: "Unavailable"; "The requested time (10:30–11:30) overlaps an existing booking (10:00–11:00)."; Failed rule: AC4.
+            Demo label; text "Unfortunately 10:30–11:30 clashes with an existing booking from 10:00 to 11:00. Try a different time that does not overlap it."
+  Result: PASS     File: TC02_overlap_1280.png
+
+TC03  URL /   1280 + 375   Blocked switch turned on, then 11:00-12:00 -> Check -> Explain
+  Observed: "Unavailable"; "The room is currently blocked. All availability requests are rejected while blocked."; Failed rule: AC3.
+            Demo label; text "Sorry, Room 301 is blocked at the moment, so all requests are turned down. Please check again later."
+  Not performed: Expected part (a)/(b) (result cleared when toggling Blocked) — in this run the switch was turned on BEFORE
+            entering the input, as ordered in the task, so the clearing was not exercised.
+            Also Expected input (c) 13:00-14:00 was not used; 11:00-12:00 was used as ordered.
+  Result: PARTIAL (AC3 + demo panel observed for 11:00-12:00; toggle-clears-result not run)
+  Files: TC03_blocked_1280.png, TC03_blocked_375.png
+
+TC04  URL /   1280   08:00-08:30 -> Check -> Explain
+  Observed: "Unavailable"; Failed rule: AC1; status text "Start time must be strictly after "now" (09:00). 08:00 is not after now."
+            Demo label; "That slot starts at 08:00, but it is already 09:00. Try a start time later than 09:00."
+  Result: PASS     File: TC04_past_1280.png
+
+TC05  URL /   1280 + 375   09:00-09:30 -> Check -> Explain
+  Observed: "Unavailable"; Failed rule: AC1; "Start time must be strictly after "now" (09:00). 09:00 is not after now."
+            Demo label; "That slot starts at 09:00, but it is already 09:00. Try a start time later than 09:00."
+  Result: PASS     Files: TC05_now_1280.png, TC05_now_375.png
+
+TC06  URL /   1280 + 375   11:00-13:30 -> Check -> Explain
+  Observed: "Unavailable"; "Booking duration is 150 minutes, which exceeds the 120-minute maximum."; Failed rule: AC2.
+            Demo label; "150 minutes is a bit too long; slots can last up to 120 minutes. Try a shorter time range."
+  Result: PASS     Files: TC06_toolong_1280.png, TC06_toolong_375.png
+
+TC07  URL /   1280 + 375   Start "abc", End 12:00 -> Check -> Explain
+  Observed: "Unavailable"; "Please enter valid times in HH:MM format (e.g. 09:30)."; Failed rule: INPUT; no "Requested:" line.
+            Label "Standard explanation (AI unavailable) — not a booking confirmation";
+            text "The times could not be read. Please enter the start and end times in the HH:MM format."
+            The string "abc" appears only in the input field, not in the status card or panel.
+  Note: "adapter not called" is not observable in the browser (N1). Input differs from the planned 25:99 (as ordered).
+  Result: PASS     Files: TC07_invalid_1280.png, TC07_invalid_375.png
+
+TC08  URL /   1280   both fields empty -> Check -> Explain
+  Observed: same as TC07: Failed rule: INPUT; fallback label; same HH:MM hint text.
+  Result: PASS     File: TC08_empty_1280.png
+
+TC09  URL /   1280 + 375   200 x "a" in Start, End 12:00 -> Check -> Explain
+  Observed: Failed rule: INPUT; fallback label; same HH:MM hint. The 200 chars are not in the status card or panel text
+            (only in the input; field value length read back = 200). hscroll=false at both widths (scrollWidth == clientWidth:
+            1265/1265 and 375/375).
+  Result: PASS     Files: TC09_long_1280.png, TC09_long_375.png
+
+TC10  URL /?explainMock=timeout   1280 + 375   11:00-12:00 -> Check -> Explain
+  Observed: "Available". Immediately after the click (~0.3 s): no panel, Explain button disabled (disabled=true), screenshot grey button.
+            After ~4.3 s: fallback label, "Room 301 is free from 11:00 to 12:00 (60 minutes). This is only a check, not a booking."
+            Button enabled again (disabled=false). Status card still "Available". 375: same result, hscroll=false.
+            Exact time of enabling not measured.
+  Result: PASS     Files: TC10_timeout_pending_1280.png, TC10_timeout_done_1280.png, TC10_timeout_done_375.png
+
+TC11  URL /?explainMock=error   1280 + 375   11:00-12:00 -> Check -> Explain
+  Observed: "Available"; fallback label; "Room 301 is free from 11:00 to 12:00 (60 minutes). This is only a check, not a booking."
+            No error / key / stack text in the page text. Status card unchanged.
+  Result: PASS     Files: TC11_error_1280.png, TC11_error_375.png
+
+TC12  URL /?explainMock=nokey   1280 + 375   11:00-12:00 -> Check -> Explain
+  Observed: identical to TC11 (Available, fallback label, same text, no "key"/"not configured").
+  Result: PASS     Files: TC12_nokey_1280.png, TC12_nokey_375.png
+
+TC13  URL /   1280   as TC02, Explain clicked 3 times
+  Observed: before the clicks: Unavailable, Failed rule: AC4, no panel. After 3 clicks (all clicks hit an enabled button, result "ok"):
+            Unavailable, Failed rule: AC4, same status text; demo panel shown; bookings list in the screenshot still
+            "1 booking 10:00 -> 11:00, 60 min". Only the AFTER state is in the screenshot; "before" was compared via text.
+  Result: PASS     File: TC13_after_1280.png
+
+TC14  URL /?explainMock=timeout   1280   11:00-12:00 -> Check -> Explain; ~1 s later Start changed to 11:05; wait 5 s
+  Observed: after the change and 5 s: no status card, no Explain button, no panel (page shows only the form and the rules).
+            The optional "Check again" step was not run.
+  Result: PASS     File: TC14_after_wait_1280.png
+
+TC15  URL /   1280 + 375   10:30-11:30 -> Check -> Explain
+  Observed: status card (Unavailable, AC4) and the panel are two separate boxes, panel below the card, label readable
+            (viewed 375 and 1280 screenshots; 1280 via TC13 image which is the same state). hscroll=false (measured) at both widths.
+  Result: PASS     Files: TC15_layout_1280.png, TC15_layout_375.png
+
+TC16  URL /   1280   fresh load before Check
+  Observed: no "Explain availability" button in page text, no status card, no panel.
+            Part "Check -> Clear result" was not run in this pass.
+  Result: PARTIAL (fresh-load part observed only)     File: TC16_before_1280.png
+
+X1    URL /   1280   12:00-11:00 -> Check
+  Observed: "Unavailable"; Failed rule: AC1; line "Requested: 12:00 – 11:00 (-60 min)" is shown under the form.
+  Result: observation only (no Expected in the plan)     File: X1_reversed_range_1280.png
+
+TC17  NOT RUN — not in the requested screenshot list (network check).
+------------------------------------------------------------------------------------------------
+Summary: PASS 14 (TC01, TC02, TC04-TC15), PARTIAL 2 (TC03, TC16), NOT RUN 1 (TC17), FAIL 0.
+Screenshots saved: 28 new files in evidence/screenshots/ (all requested names were produced; none skipped).
+Nothing committed or pushed. Dev server left running.
