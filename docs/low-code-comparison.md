@@ -42,9 +42,73 @@ Status: **review not performed.** There are no facts about the configuration of 
 
 The text of the security checklist itself is left to the author (not written here).
 
+## Author items
+
+### Time per task (Task 06)
+
+Draft from the author's notes. The author must add their own time per task and per step; the repository has no timing data for the low-code work.
+
+Commit times (2026-11-19). The gap between commits is an upper bound, not effort: it includes breaks and work outside the repository.
+
+| Task | Commit | Time | Gap from previous |
+|---|---|---|---|
+| Task 01: baseline | 5cbacc8 | 15:20 | start |
+| Task 02: contract, AGENTS.md, README | 898eefe | 15:28 | ~8 min |
+| Task 03: Explain, mock adapter, validators, UI | 08d0748 | 15:45 | ~17 min |
+| Task 03: mutation checks | 0f5612a | 15:49 | ~4 min |
+| Task 04: system instruction and prompt | 86aad0b | 15:57 | ~8 min |
+| Task 05: test plan | d588781 | 15:58 | ~1 min |
+| Task 05: observations (part 1) | 3e6bc36 | 17:05 | ~67 min (waited for another tester) |
+| Task 06–07: findings, R1, R2 | 7bc5254, bf721b0, da1d741 | 17:12 | ~7 min, three commits in one minute |
+
+Later, 2026-11-25:
+- Task 05 re-run with screenshots: dev server start, script in headless Edge, 28 PNG, log. Commit 5742dbd at 22:50. Run time not measured.
+- Budibase: installing `@budibase/cli` took about 1 min. `budi hosting --init` failed on an interactive question about the port. Setup and checks were run by the author; no time recorded here.
+- Code vs low-code comparison: commit d652b63 at 22:47.
+
+To add from the author's own notes: time on the low-code app in Budibase, on T1–T8, and on debugging Preview. The repository has no facts for these.
+
+### AI reflection
+
+Draft, to be edited by the author.
+
+I used AI as an executor under rules I wrote in advance: `AGENTS.md`, the feature contract, and criteria AC1–AC5 and XAC1–XAC5. This helped in two places. Expected test results were written before the runs, so observations were not fitted to the answers. Mutation checks showed gaps in the tests: the late-response guard was not covered at first, then `guard.test.ts` was added.
+
+There were limits too. AI could not drive the browser through the extension, so the Task 05 run went through a script in headless Edge. It is not a manual run, and the log says so. Two cases remain PARTIAL (TC03, TC16), and TC17 was not run.
+
+In the low-code version on Budibase, logic was checked in the editor on two cases. T1–T8 did not pass because Preview does not show the result. I recorded this as a limitation of the bench and do not present the version as verified. For submission I use the code version: 14 PASS, 2 PARTIAL, 1 NOT RUN, 0 FAIL.
+
+Conclusion: AI sped up routine work and the search for gaps, but a person must check results, decide what counts as evidence, and answer for the wording. This matters most when AI reports "PASS".
+
+### Security checklist text
+
+Budibase self-host. Marks: [x] confirmed by facts, [ ] not checked.
+
+**Environment and Docker**
+- [ ] Budibase images are from the official source, version recorded.
+- [ ] Published ports checked: `docker ps` shows port 10000 listening on localhost, not on all interfaces.
+- [ ] Docker volumes with data contain no real personal data.
+
+**Access**
+- [ ] `http://localhost:10000` is not reachable from other machines on the network (check port binding and firewall).
+- [ ] Only one administrator; the account was created by hand.
+- [ ] The administrator password is not in the repository, the report, or the screenshots.
+- [ ] The generated `.env` in the local Budibase folder (it holds secrets) is not in git.
+
+**Data**
+- [ ] Table `Bookings` contains only made-up data (room 301, times).
+- [ ] Table permissions are restricted, no extra users.
+- [ ] Clear how to delete the data and the volumes after the lab.
+
+**App and logic**
+- [ ] Check logic in the editor matches AC1–AC4 (verified on two cases: 12:00–13:00 → Available, 10:00–11:00 → AC4).
+- [x] T1–T8 result is not claimed as passed (did not pass because of Preview).
+- [ ] User input is validated for wrong format and empty value (in the code version: TC07–TC09; not checked in low-code).
+
+**Reporting**
+- [x] `docs/low-code-comparison.md` contains no passwords or keys.
+- [x] Unchecked items are marked "not checked", not as passed.
+
 ## Left to the author (not done here)
 
-- Time per task (Task 06).
-- AI reflection.
-- The text of the security checklist.
 - Asking the teacher about the submission method (email vs repository; PDF or photos of slides).
