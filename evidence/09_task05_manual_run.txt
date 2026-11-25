@@ -10,7 +10,8 @@ Viewport: "1280" = emulated 1280x800 (page innerWidth reads 1265 because of the 
 Fixture: Room 301, now 09:00, one booking 10:00-11:00, not blocked (confirmed on screen in screenshots).
 Page reloaded (navigate) before each case.
 Observed text below = innerText read from the page after the actions, plus screenshots.
-I looked at the images of TC15_375, TC13_1280, TC10_pending_1280 only; for all other
+During the run the AI looked at the images of TC15_375, TC13_1280, TC10_pending_1280 only
+(the author viewed all files afterwards, see docs/low-code-comparison.md); for all other
 screenshots the observation comes from the page text, not from viewing the PNG.
 Horizontal scroll: measured as documentElement.scrollWidth > clientWidth (false everywhere below).
 

@@ -20,7 +20,7 @@ Both versions implement the "Smart Campus Room Availability Checker" for Room 30
 | Security | Not assessed in the sources beyond the run log. The log shows the explanation text never contains the raw invalid input (TC07, TC09). No broader review is claimed here. | Review not performed. See the risk list below. |
 | Coverage of T1–T8 / cases | 17 planned cases: PASS 14, PARTIAL 2 (TC03, TC16), NOT RUN 1 (TC17), FAIL 0. Plus X1 (observation only). | T1–T8: **0 passed** (not covered). Logic seen in the editor on 2 cases only. |
 
-Caveat on the code-version numbers: the run was scripted (headless Edge over the DevTools protocol), not clicked by a person. Only 3 of the 28 PNGs were viewed by the tester; the rest are confirmed by page text. TC03 and TC16 are PARTIAL for the reasons in the log. These caveats are in `evidence/09_task05_manual_run.txt`.
+Caveat on the code-version numbers: the run was scripted (headless Edge over the DevTools protocol), not clicked by a person. During the run only 3 of the 28 new PNGs were viewed (by the AI); the rest were confirmed by page text. Afterwards the author viewed all 30 files (the log and the PNGs in `evidence/`) and found them clean: only the app UI and test times, no personal data or secrets. TC03 and TC16 are PARTIAL for the reasons in the log. These caveats are in `evidence/09_task05_manual_run.txt`.
 
 ## Recommendation
 
